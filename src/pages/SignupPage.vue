@@ -24,10 +24,10 @@
       <q-card-section>
         <q-form @submit.prevent="onSubmit" class="full-width">
           <!-- First name -->
-          <q-input v-model="firstName" type="text" label="First name" outlined class="q-mb-lg" />
+          <q-input v-model="firstName" type="text" label="First name" outlined class="q-mb-lg" minlength="2" required/>
 
           <!-- Last name -->
-          <q-input v-model="lastName" type="text" label="Last name" outlined class="q-mb-lg" />
+          <q-input v-model="lastName" type="text" label="Last name" outlined class="q-mb-lg" minlength="2"  required />
 
           <!-- E-mail address -->
           <q-input
@@ -36,6 +36,7 @@
             label="E-mail address"
             outlined
             class="q-mb-xl"
+            required
           />
 
           <!-- Signup Button -->
@@ -57,7 +58,7 @@
     </q-card>
   </q-page>
 </template>
-    
+
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -74,7 +75,7 @@ const router = useRouter()
 
 const authStore = useAuthStore()
 
-// Placeholder login function
+//login function
 async function onSubmit() {
   signupLoading.value = true
 
@@ -95,4 +96,3 @@ function backToLogin() {
   router.push('/login')
 }
 </script>
-    
