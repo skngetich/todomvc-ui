@@ -13,18 +13,27 @@
           <!-- Password -->
           <q-input
             v-model="password"
-            type="password"
             label="Password"
+            :type="isPwd ? 'password' : 'text'"
             outlined
             class="q-mb-lg"
             :rules="passwordRules"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
+          </q-input>
 
           <!-- Confirm Password -->
           <q-input
             v-model="passwordConfirm"
             type="password"
             label="Confirm password"
+            :disable="!validatePassword(password)"
             outlined
             lazy-rules
             :rules="confirmPasswordRules"
@@ -33,41 +42,96 @@
 
           <!-- Set password Button -->
           <q-btn label="Set password" color="primary" type="submit" class="full-width" />
+          <div class="password-criteria q-pa-sm q-mt-lg">
+            <div class="text-subtitle2 q-mb-sm">Password Criteria:</div>
+            <div>
+              <q-icon
+                :name="validPassword.length ? 'check_circle' : 'cancel'"
+                :color="validPassword.length ? 'positive' : 'negative'"
+              ></q-icon>
+              Must be at least 8 characters long.
+            </div>
+            <div>
+              <q-icon
+                :name="validPassword.capital ? 'check_circle' : 'cancel'"
+                :color="validPassword.capital ? 'positive' : 'negative'"
+              ></q-icon>
+              Must contain at least one capital letter.
+            </div>
+            <div>
+              <q-icon
+                :name="validPassword.number ? 'check_circle' : 'cancel'"
+                :color="validPassword.number ? 'positive' : 'negative'"
+              ></q-icon>
+              Must contain at least one number.
+            </div>
+            <div>
+              <q-icon
+                :name="validPassword.symbol ? 'check_circle' : 'cancel'"
+                :color="validPassword.symbol ? 'positive' : 'negative'"
+              ></q-icon>
+              Must contain at least one special character: !@#$%^&*()-_+=
+            </div>
+          </div>
         </q-form>
       </q-card-section>
     </q-card>
   </q-page>
 </template>
-  
+
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useAuthStore } from 'stores/auth'
+import { ref, reactive } from "vue";
+import { useRoute } from "vue-router";
+import { useAuthStore } from "stores/auth";
 
-const route = useRoute()
-const authStore = useAuthStore()
+const route = useRoute();
+const authStore = useAuthStore();
 
-const token = route.params.token
-const uidb64 = route.params.uidb64
+const token = route.params.token;
+const uidb64 = route.params.uidb64;
 
-const password = ref('')
-const passwordConfirm = ref('')
+const password = ref("");
+const passwordConfirm = ref("");
+const isPwd = ref(true);
+
+const validPassword = reactive({
+  length: false,
+  capital: false,
+  number: false,
+  symbol: false,
+});
+
+function validatePassword(password) {
+  // Test length
+  validPassword.length = password.length >= 12;
+
+  // Test capital
+  validPassword.capital = /^(?=.*[A-Z])/.test(password);
+
+  // Test number
+  validPassword.number = /^(?=.*[0-9])/.test(password);
+
+  // Test symbol
+  validPassword.symbol = /^(?=.*[!@#$%^&*_\-=+])/.test(password);
+
+  return (
+    validPassword.length &&
+    validPassword.capital &&
+    validPassword.number &&
+    validPassword.symbol
+  );
+}
 
 const passwordRules = [
-  (v) => !!v || 'Password is required',
-  (v) => v.length >= 8 || 'Min 8 characters',
-]
+  (val) => validatePassword(val) || "Password must meet all criteria.",
+];
 
-const confirmPasswordRules = [(v) => v === password.value || 'Passwords do not match.']
+const confirmPasswordRules = [(v) => v === password.value || "Passwords do not match."];
 
-onMounted(() => {
-  console.log('mounted')
-})
-// Placeholder login function
+// Set password function
 async function onSubmit() {
   await authStore.setPassword(token, uidb64, {
     password: password.value,
-  })
+  });
 }
 </script>
-  
