@@ -11,7 +11,7 @@
       <q-card-section>
         <q-form @submit.prevent="onSubmit" class="full-width">
           <!-- Email -->
-          <q-input v-model="email" type="email" label="Email" outlined class="q-mb-lg" />
+          <q-input v-model="email" type="email" label="Email" outlined class="q-mb-lg" required />
 
           <!-- Reset password Button -->
           <q-btn label="Reset password" color="primary" type="submit" class="full-width" />
@@ -30,17 +30,19 @@
     </q-card>
   </q-page>
 </template>
-  
+
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
+import { useAuthStore } from "stores/auth";
+
+const authStore = useAuthStore();
 
 const email = ref('')
-const password = ref('')
 
-// Placeholder login function
+// Request  a password reset
 function onSubmit() {
-  // Implement actual login logic here
-  console.log('Logging in with:', email.value, password.value)
+  authStore.getForgotPassword({
+    email: email.value
+  })
 }
 </script>
-  
