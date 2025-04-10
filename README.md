@@ -1,6 +1,13 @@
-# Rococo Sample App (rococo-sample-vue3)
+# TodoMVC app
 
-A Vue3 starting point for rococo-based web apps
+## About Repo
+
+This is a UI for a Todomvc app using Vue3 and flask as the [backend](https://github.com/skngetich/todomvc-backend).
+
+## Preview
+
+![Watch the video](./todomvc-ui.webm)
+
 
 ## Install the dependencies
 ```bash
