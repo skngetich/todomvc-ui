@@ -6,7 +6,7 @@ This is a UI for a Todomvc app using Vue3 and flask as the [backend](https://git
 
 ## Preview
 
-![Watch the video](./todomvc-ui.webm)
+![Watch the video](./todomvc-ui.gif)
 
 
 ## Install the dependencies
