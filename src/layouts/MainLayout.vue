@@ -12,7 +12,7 @@
           v-if="authStore.isAuthenticated"
         />
 
-        <q-toolbar-title> Todomvc </q-toolbar-title>
+        <q-toolbar-title> TodoMVC </q-toolbar-title>
 
         <div v-if="authStore.isAuthenticated">
           <div class="cursor-pointer">
