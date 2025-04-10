@@ -1,10 +1,9 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { Notify } from 'quasar';
-import axios from "config/axios"
-import localStorageService from 'services/localStorage.service';
+import { Notify } from 'quasar'
+import axios from 'config/axios'
+import localStorageService from 'services/localStorage.service'
 
-import { handleAuthRequest } from '@/utils/apiHelper';
-
+import { handleAuthRequest } from '@/utils/apiHelper'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -66,6 +65,29 @@ export const useAuthStore = defineStore('auth', {
         () => axios.post(`/auth/forgot_password`, payload),
         this.router,
       )
+    },
+    async changeName(payload) {
+      let response
+      try {
+        response = await axios.put(`/person/change_name`, payload)
+      } catch {
+        Notify.create({
+          message: 'An unknown error occurred',
+          color: 'danger',
+        })
+        return false
+      }
+
+      if (response.data?.success) {
+        const { person } = response.data
+        this.user = person
+        localStorageService.setItem('user', person)
+      } else {
+        Notify.create({
+          message: response.data?.message,
+          color: 'danger',
+        })
+      }
     },
 
     async logout() {
